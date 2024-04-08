@@ -17,7 +17,7 @@ namespace Sim808::ShortMessages
 {
 
 /// A short message.
-/// @ingroup sim-short_messages
+/// @ingroup sim-sms
 /// @since   0.1.0
 class Message
 {

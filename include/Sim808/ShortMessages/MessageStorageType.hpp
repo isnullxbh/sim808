@@ -13,7 +13,7 @@ namespace Sim808::ShortMessages
 {
 
 /// Defines message storage type.
-/// @ingroup sim-short_messages
+/// @ingroup sim-sms
 /// @since   0.1.0
 enum class MessageStorageType
 {
@@ -27,7 +27,7 @@ enum class MessageStorageType
 /// Gets the string representation of the specified message storage type.
 /// @param   type Message storage type.
 /// @return  A string representation of the message storage type.
-/// @ingroup sim-short_messages
+/// @ingroup sim-sms
 /// @since   0.1.0
 auto convertToString(MessageStorageType type) -> std::string_view;
 
@@ -37,7 +37,7 @@ auto convertToString(MessageStorageType type) -> std::string_view;
 /// @param   str A string representation of the message storage type.
 /// @return  If there is a message storage type with a given string representation - message storage type, otherwise -
 ///          std::nullopt.
-/// @ingroup sim-short_messages
+/// @ingroup sim-sms
 /// @since   0.1.0
 auto tryConvertToMessageStorageType(std::string_view str) -> std::optional<MessageStorageType>;
 

@@ -14,7 +14,7 @@
 
 /// @defgroup sim Driver
 
-/// @defgroup sim-short_messages Short Message Service (SMS)
+/// @defgroup sim-sms Short Message Service (SMS)
 /// @ingroup  sim
 
 /// @defgroup sim-utilities Utility

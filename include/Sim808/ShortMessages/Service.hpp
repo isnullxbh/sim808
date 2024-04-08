@@ -14,12 +14,12 @@
 #include <Sim808/ShortMessages/Message.hpp>
 #include <Sim808/ShortMessages/MessageStorageType.hpp>
 
-/// Short message service (SMS).
+/// Short Message Service (SMS).
 namespace Sim808::ShortMessages
 {
 
 /// A service intended to work with SMS messages.
-/// @ingroup sim-short_messages
+/// @ingroup sim-sms
 /// @since   0.1.0
 class Service
 {

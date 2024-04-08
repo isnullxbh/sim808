@@ -10,7 +10,7 @@ namespace Sim808::ShortMessages
 {
 
 /// Defines the types of messages transfer between the mobile station and the SMS center.
-/// @ingroup sim_short-messages
+/// @ingroup sim-sms
 /// @since   0.1.0
 enum class MessageTransferType
 {
