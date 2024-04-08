@@ -16,12 +16,12 @@ TEST(ShortMessages_Message, Parse)
 
     {
         // Delivery message
-        const std::string_view str = "1,\"REC UNREAD\",\"+79230022855\",\"\",\"24/04/06,00:31:24+28\"\r\nHi!";
+        const std::string_view str = "1,\"REC UNREAD\",\"+7xxxxxxxxxx\",\"\",\"24/04/06,00:31:24+28\"\r\nHi!";
         const auto message = Message::parse(str);
         ASSERT_TRUE(message);
         EXPECT_EQ(message->index(), 1U);
         EXPECT_EQ(message->storageType(), MessageStorageType::Unread);
-        EXPECT_EQ(message->senderNumber(), "+79230022855");
+        EXPECT_EQ(message->senderNumber(), "+7xxxxxxxxxx");
         EXPECT_EQ(message->sender(), "");
         EXPECT_EQ(message->timestamp(), "24/04/06,00:31:24+28");
         EXPECT_EQ(message->text(), "Hi!");
