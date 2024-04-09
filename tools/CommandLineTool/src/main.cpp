@@ -7,6 +7,7 @@
 #include <iostream>
 #include <future>
 #include <chrono>
+#include <format>
 #include <functional>
 
 #include <asio/io_context.hpp>
@@ -15,6 +16,7 @@
 #include <Sim808/DefaultCommandGateway.hpp>
 
 #include <Sim808/CommandLineTool/CommandDispatcher.hpp>
+#include <Sim808/CommandLineTool/Utility.hpp>
 
 using namespace std::chrono_literals;
 using Sim808::CommandGateway;
@@ -23,6 +25,7 @@ using ShortMessageService = Sim808::ShortMessages::Service;
 
 void handleListShortMessages(ShortMessageService& service, std::string_view input);
 void handleSendMessage(ShortMessageService& service, std::string_view input);
+void handleDeleteMessages(ShortMessageService& service, std::string_view command);
 
 auto main(int argc, char** argv) -> int
 {
@@ -45,6 +48,7 @@ auto main(int argc, char** argv) -> int
     CommandDispatcher dispatcher;
     dispatcher.registerHandler("sms:list", std::bind_front(handleListShortMessages, std::ref(shortMessageService)));
     dispatcher.registerHandler("sms:send", std::bind_front(handleSendMessage, std::ref(shortMessageService)));
+    dispatcher.registerHandler("sms:delete", std::bind_front(handleDeleteMessages, std::ref(shortMessageService)));
 
     std::string command;
     while (true)
@@ -133,4 +137,65 @@ void handleSendMessage(ShortMessageService& service, std::string_view input)
     const auto text = input.substr(text_pos + text_prefix.size(), text_end_pos - (text_pos + text_prefix.size()));
 
     service.sendMessage(number, text);
+}
+
+void handleDeleteMessages(ShortMessageService& service, std::string_view command)
+{
+    using Sim808::CommandLineTool::Utility;
+    using Sim808::ShortMessages::DeletionRequestType;
+    using Sim808::ShortMessages::MessageIndex;
+    using Sim808::ResultCode;
+
+    const auto parameters = Utility::extractKeyValuePairs(command);
+
+    ResultCode rc;
+
+    if (parameters.contains("index"))
+    {
+        MessageIndex index;
+
+        try
+        {
+            index = std::stoul(std::string(parameters.at("index")));
+        }
+        catch (const std::exception& ex)
+        {
+            std::cerr << "Wrong index format" << std::endl;
+            return;
+        }
+
+        rc = service.deleteMessage(index);
+    }
+    else if (parameters.contains("del_type"))
+    {
+        DeletionRequestType type;
+
+        const auto type_as_str = parameters.at("del_type");
+        if (type_as_str == "read")
+            type = DeletionRequestType::Read;
+        else if (type_as_str == "unread")
+            type = DeletionRequestType::Unread;
+        else if (type_as_str == "sent")
+            type = DeletionRequestType::Sent;
+        else if (type_as_str == "unsent")
+            type = DeletionRequestType::Unsent;
+        else if (type_as_str == "inbox")
+            type = DeletionRequestType::Received;
+        else if (type_as_str == "all")
+            type = DeletionRequestType::All;
+        else
+        {
+            std::cerr << "Unknown deletion request type: \"" << type_as_str << "\"" << std::endl;
+            return;
+        }
+
+        rc = service.deleteMessages(type);
+    }
+    else
+    {
+        std::cerr << "Wrong command format" << std::endl;
+        return;
+    }
+
+    std::cout << rc.toString() << std::endl;
 }

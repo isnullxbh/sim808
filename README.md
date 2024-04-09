@@ -42,11 +42,13 @@ cmake --build build/debug --target Sim808
 
 ### Targets
 
-| Name                     |        Description        | Since |
-|:-------------------------|:-------------------------:|:-----:|
-| `Sim808`                 |          Driver           | 0.1.0 |
-| `Sim808.Tests`           | Unit tests for the driver | 0.1.0 |
-| `Sim808.CommandLineTool` |           REPL            | 0.1.0 |
+| Name                           |           Description            | Since |
+|:-------------------------------|:--------------------------------:|:-----:|
+| `Sim808`                       |              Driver              | 0.1.0 |
+| `Sim808.Tests`                 |    Unit tests for the driver     | 0.1.0 |
+| `Sim808.CommandLineTool.Core`  |  Command-line tool core library  | 0.1.0 |
+| `Sim808.CommandLineTool`       |        Command-line tool         | 0.1.0 |
+| `Sim808.CommandLineTool.Tests` | Unit tests for command-line tool | 0.1.0 |
 
 ### Options
 
@@ -60,6 +62,7 @@ cmake --build build/debug --target Sim808
 - [Short Message Service](include/Sim808/ShortMessages/Service.hpp) (SMS)
   - Retrieving a list of messages from the specified message storage
   - Sending messages
+  - Deleting messages (by index and from the specified message storage)
 
 ## Command-line tool
 
@@ -78,15 +81,43 @@ sms:send to="+7xxxxxxxxxx" text="Hi!"
 
 ### Short Message Service (SMS)
 
-|  Command   |      Description       |  Parameters  | Since |
-|:----------:|:----------------------:|:------------:|:-----:|
-| `sms:list` | Get a list of messages |     None     | 0.1.0 |
-| `sms:send` |     Send a message     | `to`, `text` | 0.1.0 |
+|   Command    |      Description       |     Parameters      | Since |
+|:------------:|:----------------------:|:-------------------:|:-----:|
+|  `sms:list`  | Get a list of messages |        None         | 0.1.0 |
+|  `sms:send`  |     Send a message     |    `to`, `text`     | 0.1.0 |
+| `sms:delete` |    Delete messages     | `index`, `del_type` | 0.1.0 |
+
+_See below for more information about the commands._
 
 **Parameters:**
 
 - `to` - receiver number
 - `text` - message text
+- `index` - message index
+- `del_type` - defines which messages should be deleted
+
+#### Command: `sms:delete`
+
+To delete a single message with the specified index:
+
+```shell
+sms:delete index="3"
+```
+
+To delete messages from the specified message storage:
+
+```shell
+sms:delete del_type="<type>"
+```
+
+, where _type_ takes one of the following values:
+
+- `read` - delete only read messages
+- `unread` - delete only unread messages
+- `sent` - delete only sent messages
+- `unsent` - delete only unsent messages
+- `inbox` - delete read and unread messages
+- `all` - delete all messages
 
 ## Documentation
 

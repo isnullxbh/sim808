@@ -20,6 +20,8 @@ target_sources(Sim808
             BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/../include
             FILES
                 # Short message service (SMS)
+                ${CMAKE_CURRENT_SOURCE_DIR}/../include/Sim808/ShortMessages/BaseTypes.hpp
+                ${CMAKE_CURRENT_SOURCE_DIR}/../include/Sim808/ShortMessages/DeletionRequestType.hpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/../include/Sim808/ShortMessages/Message.hpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/../include/Sim808/ShortMessages/MessageStorageType.hpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/../include/Sim808/ShortMessages/MessageTransferType.hpp
@@ -33,6 +35,7 @@ target_sources(Sim808
 target_sources(Sim808
     PRIVATE
         # Short message service (SMS)
+        Sim808/ShortMessages/DeletionRequestType.cpp
         Sim808/ShortMessages/Message.cpp
         Sim808/ShortMessages/MessageStorageType.cpp
         Sim808/ShortMessages/Service.cpp

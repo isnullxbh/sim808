@@ -10,6 +10,7 @@
 #include <format>
 #include <iostream>
 #include <thread>
+#include <type_traits>
 
 using namespace std::chrono_literals;
 
@@ -22,13 +23,27 @@ Service::Service(CommandGateway::Ptr gateway)
     : _gateway(std::move(gateway))
 {}
 
+auto Service::deleteMessage(MessageIndex index) -> ResultCode
+{
+    const auto command = std::format("AT+CMGD={}\r", index);
+    auto response = _gateway->send(command);
+    return std::move(response.code);
+}
+
+auto Service::deleteMessages(DeletionRequestType type) -> ResultCode
+{
+    const auto command = std::format("AT+CMGDA=\"{}\"\r", convertToString(type));
+    auto response = _gateway->send(command);
+    return std::move(response.code);
+}
+
 auto Service::sendMessage(std::string_view number, std::string_view text) -> void
 {
     _gateway->send("AT+CSCS=\"GSM\"\r");
     _gateway->sendData(std::format("AT+CMGS=\"{}\"\r", number));
     _gateway->waitFor(">");
     const auto response = _gateway->send(std::format("{}\032", text));
-    std::cout << "Response: code=" << (int)response.code << " data=" << response.data << std::endl;
+    // std::cout << "Response: code=" << (int)response.code << " data=" << response.data << std::endl;
 }
 
 auto Service::getMessages(MessageStorageType type, bool update_status) -> Messages
@@ -53,7 +68,7 @@ auto Service::getMessages(MessageStorageType type, bool update_status) -> Messag
     const auto command = std::format("AT+CMGL=\"{}\", {}\r", store, static_cast<int>(!update_status));
     const auto response = _gateway->send(command);
 
-    if (response.code != ResultCode::Ok)
+    if (!response.code)
     {
         return {};
     }

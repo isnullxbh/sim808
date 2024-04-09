@@ -7,9 +7,9 @@ target_include_directories(Sim808.CommandLineTool
 target_sources(Sim808.CommandLineTool
     PRIVATE
         main.cpp
-        # Repl
         Sim808/CommandLineTool/CommandDispatcher.cpp)
 
 target_link_libraries(Sim808.CommandLineTool
     PUBLIC
-        Sim808::Core)
+        Sim808::Core
+        Sim808::CommandLineTool::Core)

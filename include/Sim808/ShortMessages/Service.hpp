@@ -11,6 +11,8 @@
 
 #include <Sim808/CommandGateway.hpp>
 
+#include <Sim808/ShortMessages/BaseTypes.hpp>
+#include <Sim808/ShortMessages/DeletionRequestType.hpp>
 #include <Sim808/ShortMessages/Message.hpp>
 #include <Sim808/ShortMessages/MessageStorageType.hpp>
 
@@ -24,7 +26,7 @@ namespace Sim808::ShortMessages
 class Service
 {
 public:
-    using Messages = std::vector<Message>; ///< A type of message list.
+    using Messages = std::vector<Message>; ///< The type of message list.
 
 public:
     /// Constructor.
@@ -32,6 +34,16 @@ public:
     explicit Service(CommandGateway::Ptr gateway);
 
 public:
+    /// Deletes the message with the specified index.
+    /// @param  index Message index.
+    /// @return The result code of the operation.
+    auto deleteMessage(MessageIndex index) -> ResultCode;
+
+    /// Deletes messages from the specified message storage.
+    /// @param  type Deletion request type.
+    /// @return The result code of the operation.
+    auto deleteMessages(DeletionRequestType type) -> ResultCode;
+
     /// Sends message.
     /// @param number A number of a caller.
     /// @param text   Message text.
