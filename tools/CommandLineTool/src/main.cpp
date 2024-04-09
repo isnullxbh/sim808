@@ -23,8 +23,25 @@ using Sim808::CommandGateway;
 using Sim808::CommandLineTool::CommandDispatcher;
 using ShortMessageService = Sim808::ShortMessages::Service;
 
-void handleListShortMessages(ShortMessageService& service, std::string_view input);
-void handleSendMessage(ShortMessageService& service, std::string_view input);
+/// Handle the command to get message list.
+/// @param   service Short message service.
+/// @param   command Command.
+/// @ingroup sim-clt
+/// @since   0.1.0
+void handleListShortMessages(ShortMessageService& service, std::string_view command);
+
+/// Handle the command to send message.
+/// @param   service Short message service.
+/// @param   command Command.
+/// @ingroup sim-clt
+/// @since   0.1.0
+void handleSendMessage(ShortMessageService& service, std::string_view command);
+
+/// Handle the command to delete message(s).
+/// @param   service Short message service.
+/// @param   command Command.
+/// @ingroup sim-clt
+/// @since   0.1.0
 void handleDeleteMessages(ShortMessageService& service, std::string_view command);
 
 auto main(int argc, char** argv) -> int
@@ -76,7 +93,7 @@ auto main(int argc, char** argv) -> int
     return 0;
 }
 
-void handleListShortMessages(ShortMessageService& service, std::string_view input)
+void handleListShortMessages(ShortMessageService& service, std::string_view command)
 {
     using Sim808::ShortMessages::MessageStorageType;
 
@@ -98,43 +115,19 @@ void handleListShortMessages(ShortMessageService& service, std::string_view inpu
     }
 }
 
-void handleSendMessage(ShortMessageService& service, std::string_view input)
+void handleSendMessage(ShortMessageService& service, std::string_view command)
 {
-    constexpr std::string_view to_prefix   { "to=\"" };
-    constexpr std::string_view text_prefix { "text=\"" };
+    using Sim808::CommandLineTool::Utility;
 
-    const auto to_pos = input.find(to_prefix);
-    if (to_pos == std::string_view::npos)
+    const auto parameters = Utility::extractKeyValuePairs(command);
+
+    if (!parameters.contains("to") || !parameters.contains("text"))
     {
-        std::cerr << "Number is not specified" << std::endl;
+        std::cerr << "The required parameters are missing" << std::endl;
         return;
     }
 
-    const auto text_pos = input.find(text_prefix);
-    if (text_pos == std::string_view::npos)
-    {
-        std::cerr << "Enter message text" << std::endl;
-        return;
-    }
-
-    const auto to_end_pos = input.find('"', to_pos + to_prefix.size());
-    if (to_end_pos == std::string_view::npos)
-    {
-        std::cerr << "Invalid syntax" << std::endl;
-        return;
-    }
-
-    const auto text_end_pos = input.find('"', text_pos + text_prefix.size());
-    if (text_end_pos == std::string_view::npos)
-    {
-        std::cerr << "Invalid syntax" << std::endl;
-        return;
-    }
-
-    const auto number = input.substr(to_pos + to_prefix.size(), to_end_pos - (to_pos + to_prefix.size()));
-    const auto text = input.substr(text_pos + text_prefix.size(), text_end_pos - (text_pos + text_prefix.size()));
-
-    const auto send_result = service.sendMessage(number, text);
+    const auto send_result = service.sendMessage(parameters.at("to"), parameters.at("text"));
 
     if (!send_result)
     {

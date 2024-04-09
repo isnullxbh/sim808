@@ -16,7 +16,7 @@ namespace Sim808::CommandLineTool
 {
 
 /// A command dispatcher.
-/// @ingroup sim_clt
+/// @ingroup sim-clt
 /// @since   0.1.0
 class CommandDispatcher
 {

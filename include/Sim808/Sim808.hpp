@@ -20,7 +20,7 @@
 /// @defgroup sim-utilities Utility
 /// @ingroup  sim
 
-/// @defgroup sim_clt Command-line tool
+/// @defgroup sim-clt Command-line tool
 
 /// Entry point namespace.
 namespace Sim808

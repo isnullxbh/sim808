@@ -123,7 +123,8 @@ WARN_LOGFILE           =
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = include \
-                         tools/CommandLineTool/include
+                         tools/CommandLineTool/include \
+                         tools/CommandLineTool/src/main.cpp
 INPUT_ENCODING         = UTF-8
 INPUT_FILE_ENCODING    =
 FILE_PATTERNS          = *.c \
