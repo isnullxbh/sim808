@@ -57,8 +57,6 @@ auto main(int argc, char** argv) -> int
         std::cin.clear();
         std::getline(std::cin, command);
 
-        std::cout << "Done" << std::endl;
-
         if (command.starts_with("quit"))
             break;
 
@@ -136,7 +134,15 @@ void handleSendMessage(ShortMessageService& service, std::string_view input)
     const auto number = input.substr(to_pos + to_prefix.size(), to_end_pos - (to_pos + to_prefix.size()));
     const auto text = input.substr(text_pos + text_prefix.size(), text_end_pos - (text_pos + text_prefix.size()));
 
-    service.sendMessage(number, text);
+    const auto send_result = service.sendMessage(number, text);
+
+    if (!send_result)
+    {
+        std::cerr << send_result.error().toString() << std::endl;
+        return;
+    }
+
+    std::cout << "Message sent [index=" << send_result.value() << "]" << std::endl;
 }
 
 void handleDeleteMessages(ShortMessageService& service, std::string_view command)

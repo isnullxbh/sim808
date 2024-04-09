@@ -1,5 +1,6 @@
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(ASIO REQUIRED asio)
+find_package(ext CONFIG REQUIRED)
 
 add_library(Sim808)
 add_library(Sim808::Core ALIAS Sim808)
@@ -45,3 +46,6 @@ target_sources(Sim808
         Sim808/DefaultCommandGateway.cpp
         Sim808/ResultCode.cpp
         Sim808/Sim808.cpp)
+
+target_link_libraries(Sim808
+    ext)

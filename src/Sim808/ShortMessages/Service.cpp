@@ -9,7 +9,6 @@
 #include <chrono>
 #include <format>
 #include <iostream>
-#include <thread>
 #include <type_traits>
 
 using namespace std::chrono_literals;
@@ -37,13 +36,24 @@ auto Service::deleteMessages(DeletionRequestType type) -> ResultCode
     return std::move(response.code);
 }
 
-auto Service::sendMessage(std::string_view number, std::string_view text) -> void
+auto Service::sendMessage(std::string_view number, std::string_view text) -> ext::result<MessageIndex, ResultCode>
 {
+    static constexpr std::string_view cmgs_prefix { "+CMGS: " };
+
     _gateway->send("AT+CSCS=\"GSM\"\r");
     _gateway->sendData(std::format("AT+CMGS=\"{}\"\r", number));
     _gateway->waitFor(">");
-    const auto response = _gateway->send(std::format("{}\032", text));
-    // std::cout << "Response: code=" << (int)response.code << " data=" << response.data << std::endl;
+    auto response = _gateway->send(std::format("{}\032", text));
+
+    if (response.code)
+    {
+        const auto prefix_pos = response.data.find(cmgs_prefix);
+        const auto message_index =
+            static_cast<MessageIndex>(std::stoul(response.data.substr(prefix_pos + cmgs_prefix.size())));
+        return message_index;
+    }
+
+    return ext::result<MessageIndex, ResultCode>(ext::failure_tag, std::move(response.code));
 }
 
 auto Service::getMessages(MessageStorageType type, bool update_status) -> Messages

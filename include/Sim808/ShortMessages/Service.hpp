@@ -8,6 +8,9 @@
 
 #include <string_view>
 #include <vector>
+#include <utility>
+
+#include <ext/result.hpp>
 
 #include <Sim808/CommandGateway.hpp>
 
@@ -47,7 +50,7 @@ public:
     /// Sends message.
     /// @param number A number of a caller.
     /// @param text   Message text.
-    auto sendMessage(std::string_view number, std::string_view text) -> void;
+    auto sendMessage(std::string_view number, std::string_view text) -> ext::result<MessageIndex, ResultCode>;
 
     /// Gets messages from the specified message storage.
     /// @param  type          Message storage type.

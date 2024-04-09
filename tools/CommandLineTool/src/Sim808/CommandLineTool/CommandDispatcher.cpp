@@ -17,7 +17,15 @@ auto CommandDispatcher::execute(std::string_view command) -> void
     {
         if (handler->match(command))
         {
-            handler->execute(command);
+            try
+            {
+                handler->execute(command);
+            }
+            catch (const std::exception& ex)
+            {
+                std::cerr << "An error occurred during command execution: " << ex.what() << std::endl;
+            }
+
             return;
         }
     }

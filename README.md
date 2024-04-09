@@ -23,6 +23,7 @@ Driver for SIM808 cellular module
 - C++ compiler with `C++20` support
 - CMake
 - [non-Boost asio](https://think-async.com/Asio/)
+- [ext](https://github.com/isnullxbh/ext) - `ext::result`
 - GTest (for unit tests only)
 
 ## Build
